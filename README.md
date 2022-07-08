@@ -47,4 +47,4 @@ To contact us please email <faloker@tuta.io>.
 
 
 ## License
-This Pack uses the following license: [`<license_name>`](https://link-to-license-example.com).
+This Pack uses the following license: [`Apache 2.0`](https://github.com/faloker/cc-synology-events/blob/main/LICENSE).
