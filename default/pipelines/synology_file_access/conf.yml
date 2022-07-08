@@ -1,0 +1,103 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: >-
+        This pipeline will process Synology file transfer logs
+        (create|write|read|delete|rename).
+
+
+        There are multiple functions in this pipeline:
+
+        #2. Simple eval to set the index, sourcetype, action and cleanup the raw message to remove syslog headers
+
+        #3. Optional. Needed in case of synology uses local time instead of UTC.
+
+        #4. Extract available fields such as object_path, object_type, user, src_ip, etc
+
+        #5. Reshape the events into JSON
+
+        #6. Clean up
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: index
+          value: "`synology`"
+        - name: sourcetype
+          value: "`synology:file_access`"
+      remove:
+        - "*"
+      keep:
+        - _*
+        - index
+        - source
+        - sourcetype
+        - host
+    description: Set fields to correct values and remove syslog fields.
+  - id: auto_timestamp
+    filter: "true"
+    disabled: null
+    conf:
+      srcField: _raw
+      dstField: _time
+      defaultTimezone: EST
+      timeExpression: time.getTime() / 1000
+      offset: 0
+      maxLen: 150
+      defaultTime: now
+      latestDateAllowed: +1week
+      earliestDateAllowed: -420weeks
+    description: Optional. Needed in case of synology uses local time instead of UTC.
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: true
+      regex: /Event:\s(?<action>.+?),\sPath:\s(?<object_path>.+?(?=,)),\sFile\/Folder:\s(?<object_type>.+?),\sSize:\s((?<object_size>[\d.]+)\s(?<object_size_unit>\w+)|NA),\sUser:\s(?<user>[^\,]+),\sIP:\s(?<src_ip>[0-9.]+)/
+      regexList:
+        - regex: /.*\/(?<object>.*.+?(?=,\sFile\/Folder))/
+        - regex: /Path:\s(?<object_path>.+)\s->\s(?<new_object_path>[^,]+)/
+    description: " Extract available fields such as object_path, object_type, user,
+      src_ip, etc"
+  - id: serialize
+    filter: "true"
+    disabled: null
+    conf:
+      type: json
+      dstField: _raw
+      fields:
+        - "!_*"
+        - "!index"
+        - "!source"
+        - "!host"
+        - "!sourcetype"
+        - "*"
+    description: Convert to JSON, and push the fields back into _raw
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      keep:
+        - _*
+        - index
+        - source
+        - sourcetype
+        - host
+        - vendor_product
+        - dvc
+      remove:
+        - "*"
+        - cribl_*
+      add: []
+    description: Clean up
+description: This pipeline will process Synology file transfer logs
+  (create|write|read|delete|rename).

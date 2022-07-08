@@ -1,0 +1,97 @@
+output: default
+streamtags: []
+groups: {}
+asyncFuncTimeout: 1000
+functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: >-
+        This pipeline will handle generic system events such as filesystem
+        operations, errors, etc.
+
+
+        There are multiple functions in this pipeline:
+
+        #2. Simple eval to set the index, sourcetype and cleanup the raw message to remove syslog headers.
+
+        #3. Optional. Needed in case of synology uses local time instead of UTC.
+
+        #4. Extract user and message fields.
+
+        #5. Reshape the events into JSON
+
+        #6. Clean up
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: index
+          value: "`synology`"
+        - name: sourcetype
+          value: "`synology:system_events`"
+      remove:
+        - "*"
+      keep:
+        - _*
+        - index
+        - host
+        - source
+        - sourcetype
+    description: Set fields to correct values and remove syslog fields.
+  - id: auto_timestamp
+    filter: "true"
+    disabled: null
+    conf:
+      srcField: _raw
+      dstField: _time
+      defaultTimezone: America/New_York
+      timeExpression: time.getTime() / 1000
+      offset: 0
+      maxLen: 150
+      defaultTime: now
+      latestDateAllowed: +1week
+      earliestDateAllowed: -420weeks
+    description: Optional. Needed in case of synology uses local time instead of UTC.
+  - id: regex_extract
+    filter: "true"
+    disabled: false
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: false
+      regex: /System\s(?<user>.+?):[^\w]+(?<message>.+)./
+      regexList: []
+    description: Extract fields such as user and message.
+  - id: serialize
+    filter: "true"
+    disabled: false
+    conf:
+      type: json
+      dstField: _raw
+      fields:
+        - "!_*"
+        - "!index"
+        - "!source"
+        - "!sourcetype"
+        - "!host"
+        - "!cribl_*"
+        - "*"
+    description: Reshape the events into JSON
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      keep:
+        - _*
+        - index
+        - host
+        - source
+        - sourcetype
+      remove:
+        - "*"
+    description: Clean up
+description: This pipeline will handle generic system events such as filesystem
+  operations, errors, etc.
