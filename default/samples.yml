@@ -1,0 +1,35 @@
+YStP9n:
+  sampleName: synology_FtpFileTransfer.log
+  created: 1657243015451
+  size: 1110
+  numEvents: 5
+9UbprY:
+  sampleName: synology_auth.log
+  isPackOnly: true
+  size: 767
+  numEvents: 4
+UaaKFY:
+  sampleName: synology_user_changes.log
+  created: 1657243371753
+  size: 781
+  numEvents: 5
+JQ5cI3:
+  sampleName: synology_system_events.log
+  created: 1657243463030
+  size: 487
+  numEvents: 3
+gNqP6X:
+  sampleName: synology_app_privileges.log
+  created: 1657243559337
+  size: 573
+  numEvents: 3
+lRa1sL:
+  sampleName: synology_user_renamed.log
+  created: 1657243748848
+  size: 452
+  numEvents: 3
+ZAOk4F:
+  sampleName: synology_fle_access.log
+  isPackOnly: true
+  size: 890
+  numEvents: 4

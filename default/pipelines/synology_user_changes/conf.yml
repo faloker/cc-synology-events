@@ -1,0 +1,153 @@
+output: default
+streamtags: []
+groups:
+  dbqI81:
+    name: Additional extractors
+    description: Extract and/or add additional fields (when applicable) from certain events.
+    index: 5
+asyncFuncTimeout: 1000
+functions:
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: >-
+        This pipeline will handle events about user modifications.
+
+
+        There are multiple functions in this pipeline:
+
+        #2. Simple eval to set the index, sourcetype, action and cleanup the raw message to remove syslog headers
+
+        #3. Optional. Needed in case of synology uses local time instead of UTC.
+
+        #4. Extract the core fields that are present in each user modification event.
+
+        #6-9. Extract additional fields (if possible) to enrich events as much as possible
+
+        #10. Reshape the events into JSON
+
+        #11. Clean up
+  - id: eval
+    filter: "true"
+    disabled: null
+    conf:
+      add:
+        - name: index
+          value: "`synology`"
+        - name: sourcetype
+          value: "`synology:user_changes`"
+      remove:
+        - "*"
+      keep:
+        - _*
+        - index
+        - host
+        - source
+        - sourcetype
+    description: Set fields to correct values and remove syslog fields.
+  - id: auto_timestamp
+    filter: "true"
+    disabled: null
+    conf:
+      srcField: _raw
+      dstField: _time
+      defaultTimezone: America/New_York
+      timeExpression: time.getTime() / 1000
+      offset: 0
+      maxLen: 150
+      defaultTime: now
+      latestDateAllowed: +1week
+      earliestDateAllowed: -420weeks
+    description: Optional. Needed in case of synology uses local time instead of UTC.
+  - id: regex_extract
+    filter: "true"
+    disabled: null
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: false
+      regex: /System\s(?<src_user>.+?):.*User\s\[(?<user>.+?)\]\swas\s(?<action>.+?(?=\.))/i
+      regexList:
+        - regex: /System\s(?<src_user>.+?):.*System\ssuccessfully\s(?<action>.+?)\sUser\s\[(?<user>.+?)\]/
+    description: Extract the core fields that are present in each user modification event.
+  - id: comment
+    filter: "true"
+    disabled: null
+    conf:
+      comment: This group is purposed to extract additional fields (when applicable)
+        from certain events. They have "Overwrite existing fields" flag set to
+        True.
+  - id: regex_extract
+    filter: _raw.match(/User\s\[[^\]]+\]\swas\s(added|removed)\s(from|to)\sthe\sgroup/)
+    disabled: false
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: true
+      regex: /System\s(?<src_user>.+?):.*User\s\[(?<user>.+?)\]\swas\s(?<action>.+)\s(to|from)\sthe\s(?<category>.+)\s\[(?<target_group>.+?)\]/
+      regexList: []
+    description: Extract fields from user group changes
+    groupId: dbqI81
+  - id: eval
+    filter: _raw.match(/Password of the user/)
+    disabled: null
+    conf:
+      add:
+        - name: category
+          value: "'password'"
+    groupId: dbqI81
+    description: Add additinal fields to password change events
+  - id: regex_extract
+    filter: _raw.match(/The app privilege on app/)
+    disabled: false
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: true
+      regex: /System\s(?<src_user>.+?):.*The (?<category>.+) on app
+        \[(?<app>.+?(?=]))\] for user
+        \[(?<user>.+?(?=]))\]\swas\s(?<action>\w+)./
+      regexList: []
+    description: Extract fields from app privilege changes for users
+    groupId: dbqI81
+  - id: regex_extract
+    filter: _raw.match(/User \[.+\] was renamed to/)
+    disabled: false
+    conf:
+      source: _raw
+      iterations: 100
+      overwrite: true
+      regex: /System\s(?<src_user>.+?):.*User\s\[(?<user>.+?)\]\swas\s(?<action>.+)\sto\s\[(?<new_name>.+)\]/
+      regexList: []
+    description: Extract fields from user rename events
+    groupId: dbqI81
+  - id: serialize
+    filter: "true"
+    disabled: false
+    conf:
+      type: json
+      dstField: _raw
+      fields:
+        - "!_*"
+        - "!index"
+        - "!source"
+        - "!sourcetype"
+        - "!host"
+        - "!cribl_*"
+        - "*"
+    description: Reshape the events into JSON
+  - id: eval
+    filter: "true"
+    disabled: false
+    conf:
+      keep:
+        - _*
+        - index
+        - host
+        - source
+        - sourcetype
+      remove:
+        - "*"
+    description: Clean up
+description: This pipeline will handle events about user modifications.
