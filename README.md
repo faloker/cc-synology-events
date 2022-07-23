@@ -3,19 +3,23 @@
 
 The Cribl Pack for Synology NAS processes events with the following goals in mind:
 
-1. Events are received via syslog directly from Synology NAS
-1. Add Splunk metadata to events (e.g. index, source, sourcetype, host) and extract fields with Splunk CIM in mind
-1. Reduction of events by trimming the Syslog header, removing unnecessary fields and droping logs about suppression.
+* Events are received via syslog directly from Synology NAS
+* The pack is designed to send logs to the Splunk destination, so it embeds some additional information in the events:
+  * splunk metadata (index, sourcetype, host)
+  * fields are named according to the Splunk Common Information Model ([CIM](https://docs.splunk.com/Documentation/CIM/5.0.1/User/Overview)), so it will work with Splunk Enterprise Security out of the box
+* Reduction of events by trimming the Syslog header, removing unnecessary fields and droping logs about suppression.
 
 You should expect to see 10-30% reduction in the size of your Synology NAS log data.
-
 
 ## Configuration
 
 Before you begin, ensure that you have met the following requirements:
-
-* Synology - See instructions below (or visit https://kb.synology.com/en-global/DSM/help/LogCenter/logcenter_client)
+* Synology - DSM
+  * See instructions below (or visit the [official DSM docs](https://kb.synology.com/en-global/DSM/help/LogCenter/logcenter_client))
 * Cribl Stream - Syslog input
+  * Pack pipelines are designed to remove all unnecessary syslog fields, such as severity, facility, facilityName, appname, etc., and leave only the important ones.
+  
+**Note - This pack was _NOT_ tested in conjunction with the [cribl-syslog-input](https://github.com/criblpacks/cribl-syslog-input) pack.**
 
 ### Synology DSM 
 
@@ -34,16 +38,19 @@ Before you begin, ensure that you have met the following requirements:
 
 ## Release Notes
 
+### Version 0.1.1 - 2022-07-17
+Minor release to fix version mismatch, update README and samples.
+
 ### Version 0.1.0 - 2022-07-08
 Initial release.
 
 
 ## Contributing to the Pack
-To contribute to the Pack, please open a pull request.
+To contribute to the pack, please open a [pull request on GitHub](https://github.com/faloker/cc-synology-events/pulls).
 
 
 ## Contact
-To contact us please email <faloker@tuta.io>.
+Feel free to reach out to <faloker@tuta.io>.
 
 
 ## License

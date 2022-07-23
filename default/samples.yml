@@ -1,8 +1,10 @@
 YStP9n:
-  sampleName: synology_FtpFileTransfer.log
+  sampleName: synology_file_access_FtpFileTransfer.log
   created: 1657243015451
   size: 1110
   numEvents: 5
+  modified: 1658110967392.4187
+  isPackOnly: true
 9UbprY:
   sampleName: synology_auth.log
   isPackOnly: true
@@ -19,17 +21,32 @@ JQ5cI3:
   size: 487
   numEvents: 3
 gNqP6X:
-  sampleName: synology_app_privileges.log
+  sampleName: synology_user_app_privileges.log
   created: 1657243559337
   size: 573
   numEvents: 3
+  modified: 1658110967392.4187
+  isPackOnly: true
 lRa1sL:
   sampleName: synology_user_renamed.log
   created: 1657243748848
   size: 452
   numEvents: 3
 ZAOk4F:
-  sampleName: synology_fle_access.log
+  sampleName: synology_fle_access_WinFileService.log
   isPackOnly: true
   size: 890
+  numEvents: 4
+  modified: 1658110967392.4187
+o2idf1:
+  sampleName: synology_conn_auth.log
+  created: 1658113659209
+  size: 2818
+  numEvents: 7
+  modified: 1658113659201.7507
+  isPackOnly: true
+FsQlMf:
+  sampleName: synology_conn_network_share.log
+  created: 1658114298024
+  size: 1649
   numEvents: 4

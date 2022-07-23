@@ -1,1 +1,1 @@
-{"name":"cc-synology-events","version":"0.0.1","author":"faloker - cc","description":"Process, reduce, and transform Synology NAS logs.","displayName":"Synology Events","tags":{"streamtags":[]}}
+{"name":"cc-synology-events","version":"0.1.1","author":"faloker - cc","description":"Process, reduce, and transform Synology NAS logs.","displayName":"Synology Events","tags":{"streamtags":[]}}
