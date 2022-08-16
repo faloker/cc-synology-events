@@ -33,6 +33,8 @@ functions:
           value: "`synology:connection`"
         - name: action
           value: "_raw.match(/failed to/) ? 'failure' : 'success'"
+        - name: action
+          value: "_raw.match(/logged out the server/) ? 'logoff' : action"
       remove:
         - "*"
       keep:
@@ -68,6 +70,8 @@ functions:
       regex: /Connection:\sUser\s\[(?<user>.+?(?=]))\]\sfrom\s\[(?<src_ip>.+?(?=\]))]\ssigned\sin\sto\s\[(?<app>\w+)\]\ssuccessfully\svia\s\[(?<authentication_method>\w+)]/
       regexList:
         - regex: /Connection.*User\s\[(?<user>.+?(?=]))\]\sfrom\s\[(?<src_ip>[0-9\.]+)]\sfailed\sto\slog\sin\svia\s\[(?<authentication_method>\w+)\]\sdue\sto\s(?<reason>[^\.\n\t]+)/
+        - regex: /Connection:\sUser\s\[(?<user>.+?(?=]))\]\sfrom\s\[(?<src_ip>.+?(?=\]))]\slogged\sin\ssuccessfully\svia\s\[(?<authentication_method>\w+)]/
+        - regex: /Connection:\sUser\s\[(?<user>.+?(?=]))\]\sfrom\s\[(?<src_ip>.+?(?=\]))]\slogged\sout\sthe\sserver\svia\s\[(?<authentication_method>\w+)]\s(?<message>.+)/
     description: Extract fields such as user, src_ip, src_hostname, etc
   - id: serialize
     filter: "true"

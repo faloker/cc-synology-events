@@ -62,7 +62,7 @@ functions:
       source: _raw
       iterations: 100
       overwrite: false
-      regex: /System\s(?<user>.+?):[^\w]+(?<message>.+)./
+      regex: /System\s(?<user>.+?):[^\w]+(?<message>.+)/
       regexList: []
     description: Extract fields such as user and message.
   - id: serialize

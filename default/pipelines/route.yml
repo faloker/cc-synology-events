@@ -46,7 +46,7 @@ routes:
     clones: []
     enableOutputExpression: false
     outputExpression: null
-    filter: _raw.match(/Connection.*User\s\[[^\]]+\]\sfrom\s\[[^\]]+\]\s(failed|signed)/)
+    filter: _raw.match(/Connection.*User\s\[[^\]]+\]\sfrom\s\[[^\]]+\]/)
     output: default
   - id: vweZYq
     name: synology_network_share_access
