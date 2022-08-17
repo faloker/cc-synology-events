@@ -38,6 +38,9 @@ Before you begin, ensure that you have met the following requirements:
 
 ## Release Notes
 
+### Version 0.1.2 - 2022-08-16
+A few changes to regexes to extract more fields when possible.
+
 ### Version 0.1.1 - 2022-07-17
 Minor release to fix version mismatch, update README and samples.
 
