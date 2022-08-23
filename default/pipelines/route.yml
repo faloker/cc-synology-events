@@ -37,17 +37,6 @@ routes:
     outputExpression: null
     filter: _raw.match(/(FileService|FileTransfer|FileStation) Event:/)
     output: default
-  - id: MWS0nq
-    name: synology_connection_auth
-    final: true
-    disabled: false
-    pipeline: synology_conn_auth
-    description: Authentication events
-    clones: []
-    enableOutputExpression: false
-    outputExpression: null
-    filter: _raw.match(/Connection.*User\s\[[^\]]+\]\sfrom\s\[[^\]]+\]/)
-    output: default
   - id: vweZYq
     name: synology_network_share_access
     final: true
@@ -58,6 +47,17 @@ routes:
     enableOutputExpression: false
     outputExpression: null
     filter: _raw.match(/via \[[^\]]+\] accessed shared/)
+    output: default
+  - id: MWS0nq
+    name: synology_connection_auth
+    final: true
+    disabled: false
+    pipeline: synology_conn_auth
+    description: Authentication events
+    clones: []
+    enableOutputExpression: false
+    outputExpression: null
+    filter: _raw.match(/Connection.*User\s\[[^\]]+\]\sfrom\s\[[^\]]+\]/)
     output: default
   - id: QF4XGk
     name: synology_user_changes

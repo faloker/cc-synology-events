@@ -38,6 +38,9 @@ Before you begin, ensure that you have met the following requirements:
 
 ## Release Notes
 
+### Version 0.1.3 - 2022-08-18
+Minor release with a fix that changes the order of routes to avoid parsing problems.
+
 ### Version 0.1.2 - 2022-08-16
 A few changes to regexes to extract more fields when possible.
 
